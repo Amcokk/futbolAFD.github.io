@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados | Fútbol AFD</title>
+    <link rel="icon" href="imagenes/logo.png" type="image/png">
+</head>
+<style>
+        @font-face {
+            font-family: lol;
+            src: url(fuentes/lol.ttf);
+        }
+        @font-face {
+            font-family: welcome;
+            src: url(fuentes/New\ Kidz.ttf)
+        }
+        @font-face {
+            font-family: new;
+            src: url(fuentes/FIFA.woff2);
+        }
+        @font-face {
+            font-family: font;
+            src: url(fuentes/RozhaOne-Regular.ttf);
+        }
+    body {
+        margin: 0;
+        font-family: lol;
+        background-color: #e1f0f6;
+        overflow: hidden; /* Evita el desplazamiento vertical */
+    }
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 30px;
+        background-color: #045694;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        font-family: lol;
+    }
+    img.logo {
+        width: 100px;
+        height: auto;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.3s;
+    }
+    img.logo:hover {
+        transform: scale(1.05);
+    }
+    .search-container {
+        flex-grow: 1;
+        margin-left: 20px;
+    }
+    .search-container input[type="text"] {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #5a80a0;
+        border-radius: 5px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+    .search-container input[type="text"]:focus {
+        border-color: #007bff;
+    }
+    .search-container input[type="text"]::placeholder {
+        color: #b0c4de;
+    }
+    nav {
+        display: flex;
+        gap: 10px;
+        margin-left: -40px;
+    }
+    nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 0px;
+        font-size: 28px;
+        transition: background-color 0.3s, color 0.3s;
+        margin-top: -40px;
+        margin-right: 50px;
+    }
+    nav a:hover {
+        color: rgb(177, 175, 175);
+    }
+    /* Layout principal */
+    .main {
+        display: flex;
+        padding: 20px;
+    }
+    /* Sidebar de ligas */
+    .sidebar {
+        width: 250px;
+        padding: 20px;
+        background-color: #03457a;
+        color: white;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        margin-left: 20px;
+        font-family: welcome;
+    }
+    .sidebar h2 {
+        font-size: 30px;
+        margin-bottom: 20px;
+        color: #ffeb3b;
+        text-align: center;
+    }
+    .league {
+        cursor: pointer;
+        padding: 15px;
+        font-size: 20px;
+        color: #ffffff;
+        border-bottom: 1px solid #5a80a0;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+        text-align: center;
+        font-family: new;
+        letter-spacing: -1px;
+    }
+    .league:hover {
+        background-color: #1c75bc;
+        transform: scale(1.05);
+    }
+    .active-league {
+        background-color: #1c75bc;
+        font-weight: bold;
+    }
+
+    .results-container {
+        display: none;
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        margin-left: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto; /* Asegura que el contenido extra quede desplazable */
+        max-height: 80vh; /* Limita la altura del contenido para evitar desbordamiento */
+        width: 800px;
+    }
+
+    .info-message {
+        background-color: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        margin-left: 20px;
+        font-size: 18px;
+        text-align: center;
+        display: block; /* Inicialmente visible */
+        max-height: 80vh; /* Limita la altura del contenido para evitar desbordamiento */
+        width: 800px;
+
+    }
+
+    .container {
+        max-width: 790spx;
+        width: 100%;
+        text-align: center;
+    }
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .match {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+    .teams {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .team {
+        display: flex;
+        align-items: left;
+    }
+    .team img {
+        width: 50px;
+        height: 50px;
+        margin-right: 5px;
+        margin-top: 30px;
+        padding: 1px;
+    }
+    .score {
+        font-size: 32px;
+        font-weight: bold;
+        margin-left: -20px;
+    }
+    .info {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #666;
+        margin-left: -40px;
+    }
+</style>
+<body>
+    <header>
+        <a href="index.html">
+            <img src="imagenes/logoo.png" alt="logo" class="logo">
+        </a>
+        <div class="search-container">
+            <input type="text" placeholder="Partidos, noticias, resultados, etc.">
+        </div>
+        <nav>
+            <a href="ligas.html">LIGAS</a>
+            <a href="resultados.html">RESULTADOS</a>
+            <a href="calendario.html">CALENDARIO</a>
+            <a href="equipos.html">EQUIPOS</a>
+        </nav>
+    </header>
+
+    <div class="main">
+        <div class="sidebar">
+            <h2>LIGAS</h2>
+            <div class="league" onclick="showResults(event, 'espanola')">LIGA ESPAÑOLA</div>
+            <div class="league" onclick="showResults(event, 'francesa')">LIGA FRANCESA</div>
+            <div class="league" onclick="showResults(event, 'colombiana')">LIGA COLOMBIANA</div>
+            <div class="league" onclick="showResults(event, 'alemana')">LIGA ALEMANA</div>
+            <div class="league" onclick="showResults(event, 'inglesa')">LIGA INGLESA</div>
+            <div class="league" onclick="showResults(event, 'italiana')">LIGA ITALIANA</div>
+        </div>
+
+        <div class="info-message" id="info-message">
+            <P style="font-size: 40px; font-family: welcome; color: #03457a;">Bienvenido a la seccion de Resultados</P>
+            <p style="font-size: 30px; font-family: new; color: #111111; letter-spacing: -1px;">ESCOGE UNA LIGA Y TE MOSTRARÁ LOS RESULTADOS DE LOS ULTIMOS PARTIDOS DE LA LIGA ESCOGIDA.</p>
+            <p style="margin-left: 650px; margin-top: 205px; font-family: welcome; color: #666; letter-spacing: -1px;">AFD FUTBOL</p>
+            <p style="margin-left: 740px; margin-top: -60px; color: #666; letter-spacing: -1px; font-size: 15px;">™</p>
+        </div>
+
+        <!-- Contenedores de resultados para cada liga -->
+        <div id="espanola" class="results-container">
+            <div class="container">
+                <div class="title">LIGA ESPAÑOLA</div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/barca.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">3 - 1</div>
+                        <div class="team">
+                            <span>ESPANYOL</span>
+                            <img src="resultados images/espanyol.svg" alt="Espanyol">
+                        </div>
+                    </div>
+                    <div class="info">
+                        03/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/atletico.png" alt="Barcelona">
+                            <span>ATLETICO</span>
+                        </div>
+                        <div class="score">2 - 0</div>
+                        <div class="team">
+                            <span>LAS PALMAS</span>
+                            <img src="resultados images/palmas.gif" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        03/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/sevilla.png" alt="Barcelona">
+                            <span>SEVILLA</span>
+                        </div>
+                        <div class="score">0 - 2</div>
+                        <div class="team">
+                            <span>R. SOCIEDAD</span>
+                            <img src="resultados images/sociedad.gif" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        03/11/2024 FIN 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="francesa" class="results-container">
+            <div class="container">
+                <div class="title">LIGA FRANCESA</div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/monaco.png" alt="AS Mónaco">
+                            <span style="font-size: 30px;">AS MÓNACO</span>
+                        </div>
+                        <div class="score">0 - 1</div>
+                        <div class="team">
+                            <span style="font-size: 30px;">ANGERS</span>
+                            <img src="resultados images/angers.png" alt="Angers">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="colombiana" class="results-container">
+            <div class="container">
+                <div class="title">LIGA COLOMBIANA</div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/monaco.png" alt="AS Mónaco">
+                            <span style="font-size: 30px;">AS MÓNACO</span>
+                        </div>
+                        <div class="score">0 - 1</div>
+                        <div class="team">
+                            <span style="font-size: 30px;">ANGERS</span>
+                            <img src="resultados images/angers.png" alt="Angers">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/202 ```html
+2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="alemana" class="results-container">
+            <div class="container">
+                <div class="title">LIGA ALEMANA</div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/monaco.png" alt="AS Mónaco">
+                            <span style="font-size: 30px;">AS MÓNACO</span>
+                        </div>
+                        <div class="score">0 - 1</div>
+                        <div class="team">
+                            <span style="font-size: 30px;">ANGERS</span>
+                            <img src="resultados images/angers.png" alt="Angers">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="inglesa" class="results-container">
+            <div class="container">
+                <div class="title">LIGA INGLESA</div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/monaco.png" alt="AS Mónaco">
+                            <span style="font-size: 30px;">AS MÓNACO</span>
+                        </div>
+                        <div class="score">0 - 1</div>
+                        <div class="team">
+                            <span style="font-size: 30px;">ANGERS</span>
+                            <img src="resultados images/angers.png" alt="Angers">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="italiana" class="results-container">
+            <div class="container">
+                <div class="title">LIGA ITALIANA</div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="resultados images/monaco.png" alt="AS Mónaco">
+                            <span style="font-size: 30px;">AS MÓNACO</span>
+                        </div>
+                        <div class="score">0 - 1</div>
+                        <div class="team">
+                            <span style="font-size: 30px;">ANGERS</span>
+                            <img src="resultados images/angers.png" alt="Angers">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+                <div class="match">
+                    <div class="teams">
+                        <div class="team">
+                            <img src="imagenes/barcelona.png" alt="Barcelona">
+                            <span>BARCELONA</span>
+                        </div>
+                        <div class="score">2 - 1</div>
+                        <div class="team">
+                            <span>REAL MADRID</span>
+                            <img src="imagenes/realmadrid.png" alt="Real Madrid">
+                        </div>
+                    </div>
+                    <div class="info">
+                        1/11/2024 FIN 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showResults(event, league) {
+            // Ocultar todos los contenedores de resultados
+            var resultsContainers = document.getElementsByClassName('results-container');
+            for (var i = 0; i < resultsContainers.length; i++) {
+                resultsContainers[i].style.display = 'none';
+            }
+            // Quitar la clase 'active-league' de todas las ligas
+            var leagues = document.getElementsByClassName('league');
+            for (var j = 0; j < leagues.length; j++) {
+                leagues[j].classList.remove('active-league');
+            }
+            // Mostrar el contenedor de resultados seleccionado
+            document.getElementById(league).style.display = 'block';
+            // Agregar la clase 'active-league' al elemento clicado
+            event.target.classList.add('active-league');
+            // Ocultar el mensaje de información
+            document.getElementById('info-message').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
